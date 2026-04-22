@@ -1,0 +1,15 @@
+# ASP.NET Core
+lolguide-api/appsettings.json
+lolguide-api/bin/
+lolguide-api/obj/
+lolguide-api/*.user
+lolguide-api/.vs/
+
+# React
+lolguide-web/node_modules/
+lolguide-web/dist/
+
+# General
+.env
+.env.local
+to study.txt
