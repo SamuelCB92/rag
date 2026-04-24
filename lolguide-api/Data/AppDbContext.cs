@@ -13,7 +13,11 @@ public class AppDbContext : DbContext
     public DbSet<Document> Documents => Set<Document>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
-    }
+{
+    base.OnModelCreating(modelBuilder);
+
+    modelBuilder.Entity<Document>()
+        .Property(d => d.Embedding)
+        .HasColumnType("vector(1536)");
+}
 }

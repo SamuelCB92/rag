@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Pgvector;
 
 namespace lolguide_api.Models;
 
@@ -20,7 +21,7 @@ public class Document
     public string? Chunk { get; set; }
 
     [Column("embedding")]
-    public float[]? Embedding { get; set; }
+    public Vector? Embedding { get; set; }
 
     [Column("created_at")]
     public DateTime CreatedAt { get; set; }
