@@ -25,10 +25,10 @@ public class ChatService : IChatService
             $"Source: {d.Title ?? d.Source}\n{d.Chunk}"));
 
         var systemPrompt =
-            "You are a League of Legends expert assistant. " +
-            "Answer questions using only the provided context. " +
-            "If the answer is not in the context, say so clearly. " +
-            "Always mention which patch or source your answer comes from.";
+    "Você é um assistente especialista nos documentos fornecidos. " +
+    "Responda as perguntas usando apenas o contexto fornecido. " +
+    "Se a resposta não estiver no contexto, diga claramente que não encontrou a informação. " +
+    "Sempre mencione de qual documento ou fonte vem sua resposta.";
 
         var userMessage = $"Context:\n{contextText}\n\nQuestion: {question}";
 
