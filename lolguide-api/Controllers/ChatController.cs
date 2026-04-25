@@ -1,6 +1,8 @@
+using lolguide_api.Data;
 using lolguide_api.Models;
 using lolguide_api.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace lolguide_api.Controllers;
 
@@ -8,15 +10,18 @@ namespace lolguide_api.Controllers;
 [Route("api/chat")]
 public class ChatController : ControllerBase
 {
+    private readonly AppDbContext _db;
     private readonly IEmbeddingService _embeddingService;
     private readonly IVectorSearchService _vectorSearchService;
     private readonly IChatService _chatService;
 
     public ChatController(
+        AppDbContext db,
         IEmbeddingService embeddingService,
         IVectorSearchService vectorSearchService,
         IChatService chatService)
     {
+        _db = db;
         _embeddingService = embeddingService;
         _vectorSearchService = vectorSearchService;
         _chatService = chatService;
@@ -27,6 +32,10 @@ public class ChatController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(body.Question))
             return BadRequest("Question is required.");
+
+        if (!await _db.Documents.AnyAsync())
+            return BadRequest(
+                "Não há documentos ingeridos. Ingira pelo menos um documento antes de perguntar.");
 
         var queryEmbedding = await _embeddingService.GetEmbeddingAsync(body.Question);
         var relevantDocs = await _vectorSearchService.SearchAsync(queryEmbedding);

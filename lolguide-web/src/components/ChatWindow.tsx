@@ -16,21 +16,24 @@ export default function ChatWindow() {
   const [error, setError] = useState<string | null>(null);
 
   async function handleSend() {
-    if (!input.trim()) return;
+    const question = input.trim();
+    if (!question) return;
 
-    const userMessage: Message = { role: "user", text: input };
+    const userMessage: Message = { role: "user", text: question };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setLoading(true);
     setError(null);
 
     try {
-      const response: ChatResponse = await postChat({ question: input });
+      const response: ChatResponse = await postChat({ question });
       setMessages((prev) => [
         ...prev,
         { role: "assistant", text: response.answer, sources: response.sources },
       ]);
     } catch (e) {
+      setMessages((prev) => prev.slice(0, -1));
+      setInput(question);
       setError(e instanceof Error ? e.message : "Algo deu errado");
     } finally {
       setLoading(false);
@@ -39,22 +42,16 @@ export default function ChatWindow() {
 
   return (
     <div
+      className="chat-window"
       style={{
         display: "flex",
         flexDirection: "column",
-        height: "100%",
-        gap: "12px",
+        flex: 1,
+        minHeight: 0,
+        gap: "10px",
       }}
     >
-      <div
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          display: "flex",
-          flexDirection: "column",
-          gap: "8px",
-        }}
-      >
+      <div className="chat-messages">
         {messages.map((msg, i) => (
           <MessageBubble
             key={i}
@@ -63,31 +60,23 @@ export default function ChatWindow() {
             sources={msg.sources}
           />
         ))}
-        {loading && <p style={{ color: "#888" }}>Pensando...</p>}
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {loading && <p className="chat-status">Pensando...</p>}
+        {error && <p className="chat-error">{error}</p>}
       </div>
 
-      <div style={{ display: "flex", gap: "8px" }}>
+      <div className="chat-composer">
         <input
-          style={{
-            flex: 1,
-            padding: "8px",
-            borderRadius: "6px",
-            border: "1px solid #ccc",
-          }}
+          className="chat-composer__input"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
           placeholder="Pergunte algo..."
         />
         <button
+          type="button"
+          className="chat-composer__send"
           onClick={handleSend}
           disabled={loading}
-          style={{
-            padding: "8px 16px",
-            borderRadius: "6px",
-            cursor: "pointer",
-          }}
         >
           Enviar
         </button>

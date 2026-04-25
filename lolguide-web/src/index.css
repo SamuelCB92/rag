@@ -1,3 +1,4 @@
+/* —— Theme tokens: light (default), dark (explicit or OS on first visit) —— */
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -10,14 +11,25 @@
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --card-inner-stroke: rgba(0, 0, 0, 0.06);
+  --msg-user-bg: #d4a843;
+  --msg-user-fg: #1a1508;
+  --msg-asst-bg: #e8e5f0;
+  --msg-asst-fg: #141218;
+  --badge-bg: #ede8f5;
+  --badge-fg: #5c4818;
+  --badge-border: #c4a035;
+  --danger: #b91c1c;
+  --success: #047857;
+  --muted: #6b7280;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: light;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -31,18 +43,32 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  html:not([data-theme]) {
     --text: #9ca3af;
     --text-h: #f3f4f6;
     --bg: #16171d;
     --border: #2e303a;
     --code-bg: #1f2028;
     --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
+    --accent-bg: rgba(192, 132, 252, 0.12);
+    --accent-border: rgba(192, 132, 252, 0.45);
     --social-bg: rgba(47, 48, 58, 0.5);
     --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+      rgba(0, 0, 0, 0.45) 0 10px 15px -3px, rgba(0, 0, 0, 0.3) 0 4px 6px -2px;
+    --card-inner-stroke: rgba(255, 255, 255, 0.06);
+    --msg-user-bg: #c9a030;
+    --msg-user-fg: #140f05;
+    --msg-asst-bg: #2a2a32;
+    --msg-asst-fg: #f3f4f6;
+    --badge-bg: #23232c;
+    --badge-fg: #e8c86b;
+    --badge-border: #8b7340;
+    --danger: #fca5a5;
+    --success: #6ee7b7;
+    --muted: #9ca3af;
+    color-scheme: dark;
+    color: var(--text);
+    background: var(--bg);
   }
 
   #social .button-icon {
@@ -50,20 +76,64 @@
   }
 }
 
+html[data-theme="dark"] {
+  --text: #9ca3af;
+  --text-h: #f3f4f6;
+  --bg: #16171d;
+  --border: #2e303a;
+  --code-bg: #1f2028;
+  --accent: #c084fc;
+  --accent-bg: rgba(192, 132, 252, 0.12);
+  --accent-border: rgba(192, 132, 252, 0.45);
+  --social-bg: rgba(47, 48, 58, 0.5);
+  --shadow:
+    rgba(0, 0, 0, 0.45) 0 10px 15px -3px, rgba(0, 0, 0, 0.3) 0 4px 6px -2px;
+  --card-inner-stroke: rgba(255, 255, 255, 0.06);
+  --msg-user-bg: #c9a030;
+  --msg-user-fg: #140f05;
+  --msg-asst-bg: #2a2a32;
+  --msg-asst-fg: #f3f4f6;
+  --badge-bg: #23232c;
+  --badge-fg: #e8c86b;
+  --badge-border: #8b7340;
+  --danger: #fca5a5;
+  --success: #6ee7b7;
+  --muted: #9ca3af;
+  color-scheme: dark;
+  color: var(--text);
+  background: var(--bg);
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  color: var(--text);
+  background: var(--bg);
+}
+
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
 #root {
-  width: 1126px;
+  width: 100%;
   max-width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
   margin: 0 auto;
-  text-align: center;
+  text-align: left;
   border-inline: 1px solid var(--border);
-  min-height: 100svh;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 body {
   margin: 0;
+  height: 100%;
+  overflow: hidden;
 }
 
 h1,

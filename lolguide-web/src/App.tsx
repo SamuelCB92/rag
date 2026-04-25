@@ -1,22 +1,33 @@
 import ChatWindow from "./components/ChatWindow";
 import IngestForm from "./components/IngestForm";
+import ThemeSwitch from "./components/ThemeSwitch";
+import "./App.css";
 
 export default function App() {
   return (
-    <div
-      style={{
-        maxWidth: "800px",
-        margin: "0 auto",
-        padding: "24px",
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        gap: "24px",
-      }}
-    >
-      <h1 style={{ margin: 0 }}>Consulta RAG</h1>
-      <ChatWindow />
-      <IngestForm />
+    <div className="app-shell">
+      <header className="app-header">
+        <div className="app-header__titles">
+          <h1>Consulta RAG</h1>
+          <p className="app-tagline">Pergunte com base nas fontes ingeridas</p>
+        </div>
+        <ThemeSwitch />
+      </header>
+
+      <div className="app-main">
+        <section className="app-chat-column" aria-label="Conversa com o assistente">
+          <div className="app-chat-card">
+            <h2 className="app-chat-heading">Chat</h2>
+            <div className="app-chat-body">
+              <ChatWindow />
+            </div>
+          </div>
+        </section>
+
+        <section className="app-ingest-column" aria-label="Ingerir documentos">
+          <IngestForm />
+        </section>
+      </div>
     </div>
   );
 }

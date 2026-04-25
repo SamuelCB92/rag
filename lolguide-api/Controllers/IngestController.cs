@@ -29,8 +29,11 @@ public class IngestController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] RequestBody body)
     {
+        if (string.IsNullOrWhiteSpace(body.Title))
+            return BadRequest("O título é obrigatório.");
+
         if (string.IsNullOrWhiteSpace(body.Content))
-            return BadRequest("Content is required.");
+            return BadRequest("O conteúdo do documento é obrigatório.");
 
         var chunks = ChunkText(body.Content, 500);
 

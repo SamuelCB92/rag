@@ -19,6 +19,10 @@ public class SourcesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get()
     {
+        if (!await _db.Documents.AnyAsync())
+            return BadRequest(
+                "Não há documentos ingeridos. Ingira um documento antes de listar as fontes.");
+
         var sources = await _db.Documents
             .Select(d => new { d.Title, d.Source })
             .Distinct()
