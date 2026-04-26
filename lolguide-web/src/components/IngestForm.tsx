@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { postIngest, getSources } from "../services/api";
+import { postIngest, getSources, deleteSource } from "../services/api";
 import type { Source } from "../services/api";
 import SourceBadge from "./SourceBadge";
 
@@ -12,6 +12,7 @@ export default function IngestForm() {
   const [error, setError] = useState<string | null>(null);
   const [sources, setSources] = useState<Source[]>([]);
   const [loadingSources, setLoadingSources] = useState(false);
+  const [deletingTitle, setDeletingTitle] = useState<string | null>(null);
 
   async function handleIngest() {
     if (!title.trim()) {
@@ -24,17 +25,16 @@ export default function IngestForm() {
       setMessage(null);
       return;
     }
-
     setLoading(true);
     setError(null);
     setMessage(null);
-
     try {
       const result = await postIngest({ title, source, content });
       setMessage(result.message);
       setTitle("");
       setSource("");
       setContent("");
+      if (sources.length > 0) await handleLoadSources();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Algo deu errado");
     } finally {
@@ -53,6 +53,24 @@ export default function IngestForm() {
       setError(e instanceof Error ? e.message : "Falha ao carregar fontes");
     } finally {
       setLoadingSources(false);
+    }
+  }
+
+  async function handleDelete(title: string) {
+    const confirmed = window.confirm(
+      `Remover todos os documentos com o título "${title}"?`,
+    );
+    if (!confirmed) return;
+    setDeletingTitle(title);
+    setError(null);
+    try {
+      await deleteSource(title);
+      setSources((prev) => prev.filter((s) => s.title !== title));
+      setMessage(`"${title}" removido com sucesso.`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erro ao remover fonte");
+    } finally {
+      setDeletingTitle(null);
     }
   }
 
@@ -78,17 +96,13 @@ export default function IngestForm() {
           rows={3}
           className="ingest-form-textarea"
         />
-
         {message && (
           <p className="ingest-feedback ingest-feedback--success">{message}</p>
         )}
-        {error && <p className="ingest-feedback ingest-feedback--error">{error}</p>}
-
-        <button
-          type="button"
-          onClick={handleIngest}
-          disabled={loading}
-        >
+        {error && (
+          <p className="ingest-feedback ingest-feedback--error">{error}</p>
+        )}
+        <button type="button" onClick={handleIngest} disabled={loading}>
           {loading ? "Ingerindo..." : "Ingerir"}
         </button>
       </div>
@@ -105,7 +119,27 @@ export default function IngestForm() {
         {sources.length > 0 && (
           <div className="source-badges">
             {sources.map((s, i) => (
-              <SourceBadge key={i} title={s.title} source={s.source} />
+              <div
+                key={i}
+                style={{ display: "flex", alignItems: "center", gap: "6px" }}
+              >
+                <SourceBadge title={s.title} source={s.source} />
+                <button
+                  type="button"
+                  onClick={() => handleDelete(s.title ?? s.source ?? "")}
+                  disabled={deletingTitle === (s.title ?? s.source)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    color: "var(--danger)",
+                    fontSize: "14px",
+                    padding: "0 4px",
+                  }}
+                >
+                  {deletingTitle === (s.title ?? s.source) ? "..." : "✕"}
+                </button>
+              </div>
             ))}
           </div>
         )}

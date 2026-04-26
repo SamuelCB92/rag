@@ -53,12 +53,7 @@ export default function ChatWindow() {
     >
       <div className="chat-messages">
         {messages.map((msg, i) => (
-          <MessageBubble
-            key={i}
-            role={msg.role}
-            text={msg.text}
-            sources={msg.sources}
-          />
+          <MessageBubble key={i} role={msg.role} text={msg.text} />
         ))}
         {loading && <p className="chat-status">Pensando...</p>}
         {error && <p className="chat-error">{error}</p>}

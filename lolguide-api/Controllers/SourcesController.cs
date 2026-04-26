@@ -30,4 +30,19 @@ public class SourcesController : ControllerBase
 
         return Ok(sources);
     }
+    [HttpDelete("{title}")]
+public async Task<IActionResult> Delete(string title)
+{
+    var documents = await _db.Documents
+        .Where(d => d.Title == title)
+        .ToListAsync();
+
+    if (!documents.Any())
+        return NotFound($"Nenhum documento encontrado com o título '{title}'.");
+
+    _db.Documents.RemoveRange(documents);
+    await _db.SaveChangesAsync();
+
+    return Ok(new { message = $"Documentos com título '{title}' removidos com sucesso." });
+}
 }

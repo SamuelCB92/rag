@@ -7,7 +7,7 @@ namespace lolguide_api.Services;
 
 public interface IVectorSearchService
 {
-    Task<List<Document>> SearchAsync(float[] queryEmbedding, int topK = 5);
+    Task<List<Document>> SearchAsync(float[] queryEmbedding, int topK = 3);
 }
 
 public class VectorSearchService : IVectorSearchService
@@ -19,7 +19,7 @@ public class VectorSearchService : IVectorSearchService
         _db = db;
     }
 
-    public async Task<List<Document>> SearchAsync(float[] queryEmbedding, int topK = 5)
+    public async Task<List<Document>> SearchAsync(float[] queryEmbedding, int topK = 3)
     {
         var vector = new Pgvector.Vector(queryEmbedding);
 

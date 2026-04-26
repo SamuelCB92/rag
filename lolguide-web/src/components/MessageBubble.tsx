@@ -1,10 +1,11 @@
+import ReactMarkdown from "react-markdown";
+
 type Props = {
   role: "user" | "assistant";
   text: string;
-  sources?: string[];
 };
 
-export default function MessageBubble({ role, text, sources }: Props) {
+export default function MessageBubble({ role, text }: Props) {
   const isUser = role === "user";
   return (
     <div
@@ -14,16 +15,7 @@ export default function MessageBubble({ role, text, sources }: Props) {
           : "message-bubble message-bubble--assistant"
       }
     >
-      <p>{text}</p>
-      {sources && sources.length > 0 && (
-        <div className="message-bubble__sources">
-          {sources.map((s, i) => (
-            <span key={i} style={{ marginRight: "6px" }}>
-              {s}
-            </span>
-          ))}
-        </div>
-      )}
+      <ReactMarkdown>{text}</ReactMarkdown>
     </div>
   );
 }

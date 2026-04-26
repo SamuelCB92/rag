@@ -67,3 +67,13 @@ export async function getSources(): Promise<Source[]> {
   if (!response.ok) throw new Error(await errorMessageFromResponse(response));
   return response.json();
 }
+
+export async function deleteSource(title: string): Promise<void> {
+  const response = await fetch(
+    `${API_BASE}/api/sources/${encodeURIComponent(title)}`,
+    {
+      method: "DELETE",
+    },
+  );
+  if (!response.ok) throw new Error(await errorMessageFromResponse(response));
+}
