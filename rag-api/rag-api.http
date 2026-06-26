@@ -1,0 +1,15 @@
+@rag_api_HostAddress = http://localhost:5282
+
+GET {{rag_api_HostAddress}}/api/sources
+Accept: application/json
+
+###
+
+POST {{rag_api_HostAddress}}/api/chat
+Content-Type: application/json
+
+{
+  "question": "What is this document about?"
+}
+
+###

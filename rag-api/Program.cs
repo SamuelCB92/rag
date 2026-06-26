@@ -1,6 +1,6 @@
 using System.Threading.RateLimiting;
-using lolguide_api.Data;
-using lolguide_api.Services;
+using rag_api.Data;
+using rag_api.Services;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Pgvector.EntityFrameworkCore;

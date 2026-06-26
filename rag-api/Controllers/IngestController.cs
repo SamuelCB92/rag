@@ -1,11 +1,11 @@
-using lolguide_api.Data;
-using lolguide_api.Models;
-using lolguide_api.Services;
+using rag_api.Data;
+using rag_api.Models;
+using rag_api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Pgvector;
 
-namespace lolguide_api.Controllers;
+namespace rag_api.Controllers;
 
 [ApiController]
 [Route("api/ingest")]

@@ -4,7 +4,7 @@ using Pgvector;
 
 #nullable disable
 
-namespace lolguide_api.Migrations
+namespace rag_api.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

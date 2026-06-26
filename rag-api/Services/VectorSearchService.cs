@@ -1,9 +1,9 @@
-using lolguide_api.Data;
-using lolguide_api.Models;
+using rag_api.Data;
+using rag_api.Models;
 using Microsoft.EntityFrameworkCore;
 using Pgvector.EntityFrameworkCore;
 
-namespace lolguide_api.Services;
+namespace rag_api.Services;
 
 public interface IVectorSearchService
 {

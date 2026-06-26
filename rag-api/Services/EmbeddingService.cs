@@ -1,6 +1,6 @@
 using OpenAI.Embeddings;
 
-namespace lolguide_api.Services;
+namespace rag_api.Services;
 
 public interface IEmbeddingService
 {

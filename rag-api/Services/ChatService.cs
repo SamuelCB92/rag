@@ -1,7 +1,7 @@
-using lolguide_api.Models;
+using rag_api.Models;
 using OpenAI.Chat;
 
-namespace lolguide_api.Services;
+namespace rag_api.Services;
 
 public interface IChatService
 {

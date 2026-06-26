@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Pgvector;
-using lolguide_api.Data;
+using rag_api.Data;
 
 #nullable disable
 
-namespace lolguide_api.Migrations
+namespace rag_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20260422192933_InitialCreate")]
@@ -26,7 +26,7 @@ namespace lolguide_api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("lolguide_api.Models.Document", b =>
+            modelBuilder.Entity("rag_api.Models.Document", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

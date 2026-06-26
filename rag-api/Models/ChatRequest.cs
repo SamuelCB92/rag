@@ -1,4 +1,4 @@
-namespace lolguide_api.Models;
+namespace rag_api.Models;
 
 public class ChatRequest
 {

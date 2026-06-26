@@ -1,7 +1,7 @@
-using lolguide_api.Models;
+using rag_api.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace lolguide_api.Data;
+namespace rag_api.Data;
 
 public class AppDbContext : DbContext
 {

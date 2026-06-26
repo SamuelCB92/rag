@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Pgvector;
 
-namespace lolguide_api.Models;
+namespace rag_api.Models;
 
 [Table("documents")]
 public class Document
