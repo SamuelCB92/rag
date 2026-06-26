@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5282";
+const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:5282";
 
 async function errorMessageFromResponse(response: Response): Promise<string> {
   const text = await response.text();

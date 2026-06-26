@@ -1,4 +1,4 @@
-const STORAGE_KEY = "lolguide-theme";
+const STORAGE_KEY = "rag-theme";
 
 export type ThemeMode = "light" | "dark";
 
