@@ -34,7 +34,7 @@ export default function ChatWindow() {
     } catch (e) {
       setMessages((prev) => prev.slice(0, -1));
       setInput(question);
-      setError(e instanceof Error ? e.message : "Algo deu errado");
+      setError(e instanceof Error ? e.message : "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -55,7 +55,7 @@ export default function ChatWindow() {
         {messages.map((msg, i) => (
           <MessageBubble key={i} role={msg.role} text={msg.text} />
         ))}
-        {loading && <p className="chat-status">Pensando...</p>}
+        {loading && <p className="chat-status">Thinking...</p>}
         {error && <p className="chat-error">{error}</p>}
       </div>
 
@@ -65,7 +65,7 @@ export default function ChatWindow() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          placeholder="Pergunte algo..."
+          placeholder="Ask something..."
         />
         <button
           type="button"
@@ -73,7 +73,7 @@ export default function ChatWindow() {
           onClick={handleSend}
           disabled={loading}
         >
-          Enviar
+          Send
         </button>
       </div>
     </div>

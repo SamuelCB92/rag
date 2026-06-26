@@ -37,7 +37,7 @@ public class ChatController : ControllerBase
 
         if (!await _db.Documents.AnyAsync())
             return BadRequest(
-                "Não há documentos ingeridos. Ingira pelo menos um documento antes de perguntar.");
+                "No documents have been ingested. Ingest at least one document before asking questions.");
 
         var queryEmbedding = await _embeddingService.GetEmbeddingAsync(body.Question);
         var relevantDocs = await _vectorSearchService.SearchAsync(queryEmbedding);

@@ -20,7 +20,7 @@ builder.Services.AddRateLimiter(options =>
         var isIngest = path.Contains("/api/ingest", StringComparison.OrdinalIgnoreCase);
 
         var limit = isIngest ? 5 : 10;
-        var action = isIngest ? "uploads de documentos" : "perguntas";
+        var action = isIngest ? "document uploads" : "questions";
 
         if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
         {
@@ -32,10 +32,10 @@ builder.Services.AddRateLimiter(options =>
 
         await context.HttpContext.Response.WriteAsJsonAsync(new
         {
-            title = "Limite de requisições atingido",
+            title = "Rate limit reached",
             detail =
-                $"Você atingiu o limite de {limit} {action} por hora neste endereço IP. " +
-                "Aguarde um pouco e tente novamente — seus documentos e conversas anteriores continuam disponíveis.",
+                $"You have reached the limit of {limit} {action} per hour from this IP address. " +
+                "Please wait a while and try again — your previous documents and conversations are still available.",
             retryAfterSeconds = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retry)
                 ? (int)Math.Ceiling(retry.TotalSeconds)
                 : (int?)null,

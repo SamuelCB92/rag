@@ -21,7 +21,7 @@ public class SourcesController : ControllerBase
     {
         if (!await _db.Documents.AnyAsync())
             return BadRequest(
-                "Não há documentos ingeridos. Ingira um documento antes de listar as fontes.");
+                "No documents have been ingested. Ingest a document before listing sources.");
 
         var sources = await _db.Documents
             .Select(d => new { d.Title, d.Source })
@@ -38,11 +38,11 @@ public async Task<IActionResult> Delete(string title)
         .ToListAsync();
 
     if (!documents.Any())
-        return NotFound($"Nenhum documento encontrado com o título '{title}'.");
+        return NotFound($"No document found with title '{title}'.");
 
     _db.Documents.RemoveRange(documents);
     await _db.SaveChangesAsync();
 
-    return Ok(new { message = $"Documentos com título '{title}' removidos com sucesso." });
+    return Ok(new { message = $"Documents titled '{title}' removed successfully." });
 }
 }

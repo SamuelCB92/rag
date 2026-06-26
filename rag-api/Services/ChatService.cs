@@ -25,10 +25,10 @@ public class ChatService : IChatService
             $"Source: {d.Title ?? d.Source}\n{d.Chunk}"));
 
         var systemPrompt =
-    "Você é um assistente especialista nos documentos fornecidos. " +
-    "Responda as perguntas usando apenas o contexto fornecido. " +
-    "Se a resposta não estiver no contexto, diga claramente que não encontrou a informação. " +
-    "Sempre mencione de qual documento ou fonte vem sua resposta.";
+    "You are an expert assistant for the provided documents. " +
+    "Answer questions using only the supplied context. " +
+    "If the answer is not in the context, clearly say you could not find the information. " +
+    "Always mention which document or source your answer comes from.";
 
         var userMessage = $"Context:\n{contextText}\n\nQuestion: {question}";
 

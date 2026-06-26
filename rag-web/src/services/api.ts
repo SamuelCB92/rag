@@ -2,7 +2,7 @@ const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:5282";
 
 async function errorMessageFromResponse(response: Response): Promise<string> {
   const text = await response.text();
-  if (!text.trim()) return `Erro ${response.status}`;
+  if (!text.trim()) return `Error ${response.status}`;
   try {
     const data: unknown = JSON.parse(text);
     if (data && typeof data === "object") {

@@ -7,8 +7,8 @@ import {
 } from "../theme";
 
 const OPTIONS: { value: ThemeMode; label: string }[] = [
-  { value: "light", label: "Claro" },
-  { value: "dark", label: "Escuro" },
+  { value: "light", label: "Light" },
+  { value: "dark", label: "Dark" },
 ];
 
 export default function ThemeSwitch() {
@@ -18,7 +18,7 @@ export default function ThemeSwitch() {
   return (
     <div className="theme-switch">
       <label className="theme-switch__label" htmlFor={id}>
-        Aparência
+        Appearance
       </label>
       <select
         id={id}
@@ -30,7 +30,7 @@ export default function ThemeSwitch() {
           setStoredMode(next);
           applyThemeMode(next);
         }}
-        aria-label="Tema claro ou escuro"
+        aria-label="Light or dark theme"
       >
         {OPTIONS.map((o) => (
           <option key={o.value} value={o.value}>

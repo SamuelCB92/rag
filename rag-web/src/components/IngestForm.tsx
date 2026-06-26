@@ -16,12 +16,12 @@ export default function IngestForm() {
 
   async function handleIngest() {
     if (!title.trim()) {
-      setError("O título é obrigatório.");
+      setError("Title is required.");
       setMessage(null);
       return;
     }
     if (!content.trim()) {
-      setError("Cole o conteúdo do documento antes de ingerir.");
+      setError("Paste the document content before ingesting.");
       setMessage(null);
       return;
     }
@@ -36,7 +36,7 @@ export default function IngestForm() {
       setContent("");
       if (sources.length > 0) await handleLoadSources();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Algo deu errado");
+      setError(e instanceof Error ? e.message : "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -50,7 +50,7 @@ export default function IngestForm() {
       setSources(result);
     } catch (e) {
       setSources([]);
-      setError(e instanceof Error ? e.message : "Falha ao carregar fontes");
+      setError(e instanceof Error ? e.message : "Failed to load sources");
     } finally {
       setLoadingSources(false);
     }
@@ -58,7 +58,7 @@ export default function IngestForm() {
 
   async function handleDelete(title: string) {
     const confirmed = window.confirm(
-      `Remover todos os documentos com o título "${title}"?`,
+      `Remove all documents titled "${title}"?`,
     );
     if (!confirmed) return;
     setDeletingTitle(title);
@@ -66,9 +66,9 @@ export default function IngestForm() {
     try {
       await deleteSource(title);
       setSources((prev) => prev.filter((s) => s.title !== title));
-      setMessage(`"${title}" removido com sucesso.`);
+      setMessage(`"${title}" removed successfully.`);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Erro ao remover fonte");
+      setError(e instanceof Error ? e.message : "Failed to remove source");
     } finally {
       setDeletingTitle(null);
     }
@@ -76,21 +76,21 @@ export default function IngestForm() {
 
   return (
     <div className="ingest-form">
-      <h2 className="ingest-form-title">Ingerir documento</h2>
+      <h2 className="ingest-form-title">Ingest document</h2>
 
       <div className="ingest-form-fields">
         <input
-          placeholder="Título (ex: documento de versão 14.8)"
+          placeholder="Title (e.g. product FAQ v1)"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
         <input
-          placeholder="URL da fonte ou nome"
+          placeholder="Source URL or name"
           value={source}
           onChange={(e) => setSource(e.target.value)}
         />
         <textarea
-          placeholder="Cole o conteúdo do documento aqui..."
+          placeholder="Paste document content here..."
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows={3}
@@ -103,7 +103,7 @@ export default function IngestForm() {
           <p className="ingest-feedback ingest-feedback--error">{error}</p>
         )}
         <button type="button" onClick={handleIngest} disabled={loading}>
-          {loading ? "Ingerindo..." : "Ingerir"}
+          {loading ? "Ingesting..." : "Ingest"}
         </button>
       </div>
 
@@ -113,7 +113,7 @@ export default function IngestForm() {
           onClick={handleLoadSources}
           disabled={loadingSources}
         >
-          {loadingSources ? "Carregando..." : "Mostrar fontes ingeridas"}
+          {loadingSources ? "Loading..." : "Show ingested sources"}
         </button>
 
         {sources.length > 0 && (
