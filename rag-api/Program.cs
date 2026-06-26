@@ -68,11 +68,13 @@ builder.Services.AddRateLimiter(options =>
 static string GetClientIp(HttpContext httpContext) =>
     httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 
+var allowedOrigins = builder.Configuration["FRONTEND_URL"] ?? "http://localhost:5173";
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(allowedOrigins.Split(','))
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
