@@ -2,12 +2,14 @@ using lolguide_api.Data;
 using lolguide_api.Models;
 using lolguide_api.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 namespace lolguide_api.Controllers;
 
 [ApiController]
 [Route("api/chat")]
+[EnableRateLimiting("Query")]
 public class ChatController : ControllerBase
 {
     private readonly AppDbContext _db;

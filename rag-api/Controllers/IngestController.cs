@@ -2,12 +2,14 @@ using lolguide_api.Data;
 using lolguide_api.Models;
 using lolguide_api.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Pgvector;
 
 namespace lolguide_api.Controllers;
 
 [ApiController]
 [Route("api/ingest")]
+[EnableRateLimiting("Ingest")]
 public class IngestController : ControllerBase
 {
     private readonly IEmbeddingService _embeddingService;

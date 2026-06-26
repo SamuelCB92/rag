@@ -1,5 +1,7 @@
+using System.Threading.RateLimiting;
 using lolguide_api.Data;
 using lolguide_api.Services;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Pgvector.EntityFrameworkCore;
 
@@ -7,6 +9,64 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        var path = context.HttpContext.Request.Path.Value ?? "";
+        var isIngest = path.Contains("/api/ingest", StringComparison.OrdinalIgnoreCase);
+
+        var limit = isIngest ? 5 : 10;
+        var action = isIngest ? "uploads de documentos" : "perguntas";
+
+        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+        {
+            context.HttpContext.Response.Headers.RetryAfter =
+                ((int)Math.Ceiling(retryAfter.TotalSeconds)).ToString();
+        }
+
+        context.HttpContext.Response.ContentType = "application/json";
+
+        await context.HttpContext.Response.WriteAsJsonAsync(new
+        {
+            title = "Limite de requisições atingido",
+            detail =
+                $"Você atingiu o limite de {limit} {action} por hora neste endereço IP. " +
+                "Aguarde um pouco e tente novamente — seus documentos e conversas anteriores continuam disponíveis.",
+            retryAfterSeconds = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retry)
+                ? (int)Math.Ceiling(retry.TotalSeconds)
+                : (int?)null,
+        }, cancellationToken);
+    };
+
+    options.AddPolicy("Query", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            GetClientIp(httpContext),
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromHours(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0,
+            }));
+
+    options.AddPolicy("Ingest", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            GetClientIp(httpContext),
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromHours(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0,
+            }));
+});
+
+static string GetClientIp(HttpContext httpContext) =>
+    httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 
 builder.Services.AddCors(options =>
 {
@@ -35,6 +95,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
+app.UseRateLimiter();
 app.UseAuthorization();
 app.MapControllers();
 
