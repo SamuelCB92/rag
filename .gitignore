@@ -20,6 +20,8 @@ rag-web/dist-ssr/
 # Notes, sample data, and docs (keep repo source-only)
 *.txt
 *.md
+!/README.md
+!/README.pt-BR.md
 
 # OS / editor
 .DS_Store
