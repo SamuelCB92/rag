@@ -1,15 +1,31 @@
 # ASP.NET Core
-lolguide-api/appsettings.json
-lolguide-api/bin/
-lolguide-api/obj/
-lolguide-api/*.user
-lolguide-api/.vs/
+**/bin/
+**/obj/
+**/*.user
+**/.vs/
 
-# React
-lolguide-web/node_modules/
-lolguide-web/dist/
+# Local config with secrets (use appsettings.json as the committed template)
+rag-api/appsettings.Development.json
 
-# General
+# React / Node
+rag-web/node_modules/
+rag-web/dist/
+rag-web/dist-ssr/
+
+# Secrets & environment
 .env
-.env.local
-to study.txt
+.env.*
+!.env.example
+
+# Notes, sample data, and docs (keep repo source-only)
+*.txt
+*.md
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
