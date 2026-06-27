@@ -21,6 +21,16 @@ public class ChatService : IChatService
 
     public async Task<ChatResponse> AskAsync(string question, List<Document> context)
     {
+        if (context.Count == 0)
+        {
+            return new ChatResponse
+            {
+                Answer =
+                    "I could not find relevant information in the ingested documents to answer that question.",
+                Sources = Array.Empty<string>(),
+            };
+        }
+
         var contextText = string.Join("\n\n", context.Select(d =>
             $"Source: {d.Title ?? d.Source}\n{d.Chunk}"));
 
