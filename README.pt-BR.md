@@ -8,12 +8,13 @@ Faça upload de um documento, faça perguntas em linguagem natural e receba resp
 
 ## Funcionalidades
 
-- **Ingestão de documentos**: Cole texto com título e URL de fonte opcional; a API divide em chunks, gera embeddings e persiste automaticamente.
+- **Ingestão de documentos**: Cole texto ou envie um PDF; a API extrai o texto, divide em chunks, gera embeddings e persiste automaticamente.
+- **Upload de PDF**: PDFs com texto de até **5MB** e **20 páginas** (PDFs escaneados/imagem não são suportados).
 - **Chat Q&A fundamentado**: Faça perguntas e receba respostas usando apenas os trechos recuperados dos documentos.
 - **Recuperação semântica**: Perguntas são convertidas em vetores e comparadas aos chunks armazenados por similaridade de cosseno (`top 3` por padrão).
 - **Atribuição de fontes**: As respostas incluem os títulos dos documentos usados como contexto.
 - **Gestão de fontes**: Liste todas as fontes ingeridas e remova um documento (todos os seus chunks) pelo título.
-- **Interface moderna**: Chat em React + TypeScript com modo escuro e textos da UI em português.
+- **Interface moderna**: Chat em React + TypeScript com modo escuro e textos da UI em inglês.
 
 ---
 
@@ -32,6 +33,7 @@ Faça upload de um documento, faça perguntas em linguagem natural e receba resp
 - **OpenAI API**
   - `text-embedding-3-small` para embeddings (1536 dimensões)
   - `gpt-4o-mini` para chat completion
+- **PdfPig** para extração de texto de PDF (pure .NET, compatível com Docker)
 
 ---
 
@@ -45,7 +47,7 @@ Upload → Chunk → Embed → Store → Query → Retrieve → Answer
 
 | Etapa | O que acontece |
 | :--- | :--- |
-| **Upload** | O usuário cola o texto via `POST /api/ingest` (título, conteúdo, fonte opcional). |
+| **Upload** | O usuário cola texto ou envia um PDF via `POST /api/ingest` (JSON ou `multipart/form-data`). |
 | **Chunk** | O backend divide o conteúdo em chunks de ~500 palavras. |
 | **Embed** | Cada chunk é enviado à OpenAI Embeddings e vira um vetor. |
 | **Store** | Chunks e vetores são salvos no PostgreSQL (tabela `documents`, coluna `vector(1536)`). |
@@ -55,7 +57,7 @@ Upload → Chunk → Embed → Store → Query → Retrieve → Answer
 
 ```mermaid
 flowchart LR
-  A[Usuário cola texto] --> B[Chunk ~500 palavras]
+  A[Usuário envia texto ou PDF] --> B[Chunk ~500 palavras]
   B --> C[OpenAI Embeddings]
   C --> D[(PostgreSQL + pgvector)]
   E[Usuário pergunta] --> F[Embed pergunta]
@@ -139,9 +141,20 @@ A interface fica disponível em **`http://localhost:5173`**.
 
 ### 4. Teste
 
-1. Abra a UI e cole um documento em **Ingerir documento**.
-2. Clique em **Ingerir** e aguarde a mensagem de sucesso.
+1. Abra a UI e cole texto ou envie um PDF em **Ingest document**.
+2. Clique em **Ingest** e aguarde a mensagem de sucesso.
 3. Faça uma pergunta no chat — a resposta deve citar suas fontes ingeridas.
+
+### Limites de upload de PDF
+
+| Restrição | Limite |
+| :--- | :--- |
+| Tamanho máximo | 5 MB |
+| Páginas máximas | 20 |
+| PDFs suportados | Apenas com texto (não escaneados/imagem) |
+| Texto mínimo extraído | 100 caracteres |
+
+PDFs escaneados ou baseados em imagem retornam um erro claro. Uploads de PDF compartilham o mesmo limite de **5 uploads/hora por IP** da ingestão de texto.
 
 ---
 
@@ -151,12 +164,23 @@ URL base: `http://localhost:5282`
 
 | Método | Endpoint | Descrição |
 | :--- | :--- | :--- |
-| `POST` | `/api/ingest` | Ingere um documento (`title`, `content`, `source` opcional) |
+| `POST` | `/api/ingest` | Ingestão via JSON (`title`, `content`, `source` opcional) ou PDF (`multipart/form-data`: `file`, `title` opcional, `source` opcional) |
 | `POST` | `/api/chat` | Faz uma pergunta (`question`); retorna `answer` e `sources` |
 | `GET` | `/api/sources` | Lista fontes ingeridas distintas |
 | `DELETE` | `/api/sources/{title}` | Remove todos os chunks de um título |
 
-**Exemplo de ingestão**
+**Exemplo de ingestão PDF**
+
+```http
+POST /api/ingest
+Content-Type: multipart/form-data
+
+file: (PDF, máx. 5MB / 20 páginas)
+title: (opcional — padrão: nome do arquivo)
+source: (opcional)
+```
+
+**Exemplo de ingestão de texto**
 
 ```json
 POST /api/ingest
@@ -183,7 +207,7 @@ POST /api/chat
 ```text
 ├── rag-api/                 # ASP.NET Core Web API
 │   ├── Controllers/         # endpoints ingest, chat, sources
-│   ├── Services/            # embeddings OpenAI, chat, busca vetorial
+│   ├── Services/            # embeddings OpenAI, chat, busca vetorial, extração PDF
 │   ├── Models/              # Document, DTOs de request/response
 │   ├── Data/                # DbContext EF Core
 │   ├── Migrations/          # schema PostgreSQL (pgvector)

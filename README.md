@@ -8,12 +8,13 @@ Upload a document, ask questions in natural language, and get answers grounded i
 
 ## Features
 
-- **Document ingestion**: Paste text with a title and optional source URL; the API chunks, embeds, and stores it automatically.
+- **Document ingestion**: Paste text or upload a PDF; the API extracts text, chunks, embeds, and stores it automatically.
+- **PDF upload**: Text-based PDFs up to **5MB** and **20 pages** (scanned/image PDFs are not supported).
 - **Grounded Q&A chat**: Ask questions and receive answers based only on retrieved document chunks.
 - **Semantic retrieval**: Questions are embedded and matched against stored chunks using cosine similarity (`top 3` by default).
 - **Source attribution**: Responses include the document titles used as context.
 - **Source management**: List all ingested sources and delete a document (all its chunks) by title.
-- **Modern UI**: React + TypeScript chat interface with dark mode and Portuguese UI copy.
+- **Modern UI**: React + TypeScript chat interface with dark mode and English UI copy.
 
 ---
 
@@ -32,6 +33,7 @@ Upload a document, ask questions in natural language, and get answers grounded i
 - **OpenAI API**
   - `text-embedding-3-small` for embeddings (1536 dimensions)
   - `gpt-4o-mini` for chat completion
+- **PdfPig** for PDF text extraction (pure .NET, Docker-friendly)
 
 ---
 
@@ -45,7 +47,7 @@ Upload → Chunk → Embed → Store → Query → Retrieve → Answer
 
 | Step | What happens |
 | :--- | :--- |
-| **Upload** | The user pastes document text via `POST /api/ingest` (title, content, optional source). |
+| **Upload** | The user pastes text or uploads a PDF via `POST /api/ingest` (JSON or `multipart/form-data`). |
 | **Chunk** | The backend splits content into ~500-word word-based chunks. |
 | **Embed** | Each chunk is sent to OpenAI Embeddings and converted to a vector. |
 | **Store** | Chunks and vectors are persisted in PostgreSQL (`documents` table, `vector(1536)` column). |
@@ -55,7 +57,7 @@ Upload → Chunk → Embed → Store → Query → Retrieve → Answer
 
 ```mermaid
 flowchart LR
-  A[User uploads text] --> B[Chunk ~500 words]
+  A[User uploads text or PDF] --> B[Chunk ~500 words]
   B --> C[OpenAI Embeddings]
   C --> D[(PostgreSQL + pgvector)]
   E[User asks question] --> F[Embed question]
@@ -139,9 +141,20 @@ The UI is available at **`http://localhost:5173`**.
 
 ### 4. Try it
 
-1. Open the UI and paste a document under **Ingerir documento**.
-2. Click **Ingerir** and wait for the success message.
+1. Open the UI and paste text or upload a PDF under **Ingest document**.
+2. Click **Ingest** and wait for the success message.
 3. Ask a question in the chat panel — answers should cite your ingested sources.
+
+### PDF upload limits
+
+| Constraint | Limit |
+| :--- | :--- |
+| Max file size | 5 MB |
+| Max pages | 20 |
+| Supported PDFs | Text-based only (not scanned/image) |
+| Min extracted text | 100 characters |
+
+Scanned or image-only PDFs return a clear error. PDF uploads share the same **5 uploads/hour per IP** rate limit as text ingest.
 
 ---
 
@@ -151,12 +164,23 @@ Base URL: `http://localhost:5282`
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `POST` | `/api/ingest` | Ingest a document (`title`, `content`, optional `source`) |
+| `POST` | `/api/ingest` | Ingest via JSON (`title`, `content`, optional `source`) or PDF upload (`multipart/form-data`: `file`, optional `title`, optional `source`) |
 | `POST` | `/api/chat` | Ask a question (`question`); returns `answer` and `sources` |
 | `GET` | `/api/sources` | List distinct ingested sources |
 | `DELETE` | `/api/sources/{title}` | Remove all chunks for a given title |
 
-**Ingest example**
+**PDF ingest example**
+
+```http
+POST /api/ingest
+Content-Type: multipart/form-data
+
+file: (PDF, max 5MB / 20 pages)
+title: (optional — defaults to filename)
+source: (optional)
+```
+
+**Text ingest example**
 
 ```json
 POST /api/ingest
@@ -183,7 +207,7 @@ POST /api/chat
 ```text
 ├── rag-api/                 # ASP.NET Core Web API
 │   ├── Controllers/         # ingest, chat, sources endpoints
-│   ├── Services/            # OpenAI embeddings, chat, vector search
+│   ├── Services/            # OpenAI embeddings, chat, vector search, PDF extraction
 │   ├── Models/              # Document, request/response DTOs
 │   ├── Data/                # EF Core DbContext
 │   ├── Migrations/          # PostgreSQL schema (pgvector)

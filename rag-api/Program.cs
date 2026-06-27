@@ -1,4 +1,5 @@
 using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.Http.Features;
 using rag_api.Data;
 using rag_api.Services;
 using Microsoft.AspNetCore.RateLimiting;
@@ -9,6 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = PdfTextExtractor.MaxFileSizeBytes;
+});
 
 builder.Services.AddRateLimiter(options =>
 {
@@ -87,6 +93,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IEmbeddingService, EmbeddingService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IVectorSearchService, VectorSearchService>();
+builder.Services.AddScoped<IPdfTextExtractor, PdfTextExtractor>();
 
 var app = builder.Build();
 

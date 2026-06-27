@@ -183,6 +183,50 @@
   color: var(--danger);
 }
 
+.ingest-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ingest-tab {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  font: inherit;
+  cursor: pointer;
+}
+
+.ingest-tab--active {
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+}
+
+.ingest-tab:hover:not(.ingest-tab--active) {
+  border-color: var(--accent-border);
+}
+
+.ingest-file-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ingest-file-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.ingest-file-name {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text);
+  word-break: break-all;
+}
+
 .app-shell {
   flex: 1;
   min-height: 0;

@@ -51,6 +51,18 @@ export async function postIngest(
   return response.json();
 }
 
+export async function postIngestPdf(
+  formData: FormData,
+): Promise<{ message: string }> {
+  const response = await fetch(`${API_BASE}/api/ingest`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) throw new Error(await errorMessageFromResponse(response));
+  return response.json();
+}
+
 export async function postChat(body: ChatBody): Promise<ChatResponse> {
   const response = await fetch(`${API_BASE}/api/chat`, {
     method: "POST",
